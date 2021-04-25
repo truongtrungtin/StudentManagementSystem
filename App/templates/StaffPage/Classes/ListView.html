@@ -1,0 +1,153 @@
+{% extends 'StaffPage/base.html' %}
+{% load static %}
+{% block css %}
+{% endblock css %}
+{% block Title %} CLASS LIST {% endblock Title %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'StaffPage' %}">HOME</a></li>
+    <li class="breadcrumb-item active">CLASS LIST</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="modal fade" id="MyModalCreate">
+        <div class="modal-dialog" >
+            <div class="modal-content" style="width: 800px!important;">
+                <div class="modal-header">
+                    <h5 id="ModalTitle" class="card-title text-bold">CREATE A NEW CLASS</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                </div>
+                <div class="modal-body" id="myModalBodyDivCreate">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="MyModalEdit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="ModalTitle" class="card-title mb-0">EDIT A CLASS</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                </div>
+                <div class="modal-body" id="myModalBodyDivEdit">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="card card-solid">
+            <div class="card-header">
+                <a href="#" onclick='Create()' class="btn btn-sm btn-success">CREATE A NEW COURSE</a>
+            </div>
+            <div class="card-body pb-0">
+                <div class="row d-flex align-items-stretch">
+                    {% for item in class %}
+                        <div class="col-12 col-sm-6 col-md-3 col-lg-3 col-xl-2 align-items-stretch">
+                            <div class="card bg-light">
+                                <div class="card-header pt-2 pb-0">
+                                    <h2 class="lead text-bold">
+                                        <b>
+                                            {{ item.Name }}
+                                        </b>
+                                    </h2>
+                                </div>
+                                <div class="card-body pt-1 pb-0">
+                                    <p class="text-muted text-sm"><b>Start Day: </b> {{ item.StartDate }} </p>
+                                    <p class="text-muted text-sm">
+                                        <b>Status:</b>
+                                        {% if item.IsActive %}
+                                            <span
+                                                    class="text-blue">Active
+                                </span>
+                                        {% else %}
+                                            <span
+                                                    class="text-red">Inactive
+                                </span>
+                                        {% endif %}
+                                    </p>
+                                    <p class="text-muted text-sm">
+                                        <b>Number of students: </b>
+                                        <span>{{ item.students_set.count }}</span>
+                                    </p>
+                                    <p class="text-muted text-sm">
+                                        <b>
+                                            Number of courses open: </b>
+                                        <span>
+                                           {% with item.classcourse_set|get_courses:True as courses %}
+                                               {{ courses.count }}
+                                           {% endwith %}
+                                      </span>
+                                    </p>
+                                </div>
+                                <div class="card-footer p-1">
+                                    <div class="text-right">
+                                        <a class="btn btn-info btn-sm"
+                                           href="#" id="{{ item.Name }}"  onclick='Edit(this.id)'>
+                                            <i class="fas fa-pencil-alt"> Edit</i>
+                                        </a>
+                                        <a href="{% url 'ViewCourseInClass' item.Name %}" class="btn btn-sm bg-teal">
+                                            <i class="fas fa-book"></i> Courses
+                                        </a>
+                                        <a href="{% url 'ViewStudentInClass' item.Name %}"
+                                           class="btn btn-sm btn-primary">
+                                            <i class="fas fa-user"></i> Students
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                <nav aria-label="Contacts Page Navigation">
+                    <ul class="pagination justify-content-center m-0">
+                        {% if class.paginator.count > 18 %}
+                            {% if class.has_previous %}
+                                <li class="page-item "><a class="page-link" href="?page=1">First</a></li>
+                            {% endif %}
+                            {% for num in class.paginator.page_range %}
+
+                                {% if class.number == num %}
+                                    <li class="page-item active"><a class="page-link"
+                                                                    href="?page={{ num }}">{{ num }}</a></li>
+                                {% elif num > class.number|add:'-3' and num < class.number|add:'3' %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                {% endif %}
+
+                            {% endfor %}
+
+                            {% if class.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ class.paginator.num_pages }}">Last</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+
+                    </ul>
+                </nav>
+            </div>
+            <!-- /.card-footer -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+{% endblock content %}
+{% block js %}
+    <script>
+        var Create = function () {
+            var url = "{% url "CreateClass" %}";
+            $("#myModalBodyDivCreate").load(url, function () {
+                $("#MyModalCreate").modal();
+            });
+        };
+
+        function Edit(Id) {
+            var url = "/StaffPage/Classes/"+Id+"/Update/";
+            $("#myModalBodyDivEdit").load(url, function () {
+                $("#MyModalEdit").modal();
+            });
+        }
+    </script>
+{% endblock js %}

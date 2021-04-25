@@ -1,0 +1,154 @@
+{% extends 'TrainerPage/base.html' %}
+
+{% load static %}
+
+{% block css  %}
+
+<!-- fullCalendar -->
+<link rel="stylesheet" href="{% static 'plugins/fullcalendar/main.min.css' %}">
+    <style>
+
+        .fc-daygrid-dot-event {
+            display: block;
+        }
+        .fc-daygrid-event {
+            white-space: break-spaces;
+        }
+        .fc .fc-scroller-liquid-absolute {
+            right: -17px;
+        }
+    </style>
+{% endblock %}
+{% block Title %}  {% endblock Title %}
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Home</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container">
+            <div class="row">
+                <div class="col-3">
+                    <div class="card ">
+                        <div class="card-header p-1 m-0">
+                            <h4 class="text-bold">Attendances</h4>
+                        </div>
+                        <div class="card-body p-1" style="height: 715px">
+                            {% for item in result %}
+                                {% if item.StartTime != None and item.Date == timenow %}
+                                    <a href="{% url 'Attendances' item.Class item.Code.id item.Lesson.id %}">
+                                        <div class="info-box bg-info">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text text-bold">{{ item.Class }}</span>
+                                                <span class="info-box-text  ">{{ item.Course }}</span>
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: 70%"></div>
+                                                </div>
+                                                <span class="progress-description">
+                                                    <b>Date: </b>
+                                                    {{ item.Date }}
+                                                </span>
+                                                <span class="progress-description">
+                                                    <b>Time: </b>
+                                                    {{ item.StartTime|time:"H:i" }}  - {{ item.EndTime|time:"H:i"}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-9">
+                    <div class="card">
+                         <div class="card-header p-1 m-0">
+                            <h4 class="text-bold">Calendar</h4>
+                        </div>
+                      <div class="card-body p-1" >
+                        <!-- THE CALENDAR -->
+                        <div id="calendar"></div>
+
+                     </div>
+          <!-- /.col -->
+                    </div>
+                </div>
+            </div>
+
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+
+<!-- /.content -->
+
+<!-- ./wrapper -->
+{% endblock %}
+
+{% block js  %}
+<!-- fullCalendar 2.2.5 -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/fullcalendar/main.min.js' %}"></script>
+<!-- Page specific script -->
+<script>
+$(function () {
+    var Calendar = FullCalendar.Calendar;
+
+    var calendarEl = document.getElementById('calendar');
+    var dict = []
+    {% for item in result %}
+        {% if  item.Date != None %}
+        dict.push({
+            title          : 'Room: {{  item.Classroom }}\nClass: {{ item.Class }}\nCourse: {{ item.Code.Name }}\nLesson: {{ item.Lesson.Name }}',
+            start          :  new Date({{ item.Date|date:'Y,m-1,d' }},{{ item.StartTime|time:"H,i" }}),
+            end            :  new Date({{ item.Date|date:'Y,m-1,d' }},{{ item.EndTime|time:"H,i" }}),
+            {% if  item.Date == timenow %}
+            url            : '{% url 'Attendances' item.Class item.Code.id item.Lesson.id %}',
+            {% endif %}
+            backgroundColor: '#sdew12', //yellow
+            borderColor    :'#sdew12',//yellow#
+        });
+        {% endif %}
+    {% endfor %}
+    // initialize the external events
+    // -----------------------------------------------------------------
+    // Declare a new array
+    let newArray = [];
+
+    // Declare an empty object
+    let uniqueObject = {};
+
+    // Loop for the array elements
+    for (let i in dict) {
+        // Extract the title
+        objTitle = dict[i]['title','start','end'];
+
+        // Use the title as the index
+        uniqueObject[objTitle] = dict[i];
+    }
+
+    // Loop to push unique object into array
+    for (i in uniqueObject) {
+        newArray.push(uniqueObject[i]);
+    }
+
+    var calendar = new Calendar(calendarEl, {
+        headerToolbar    : {
+        left  : 'prev,next today',
+        center: 'title',
+        right : 'dayGridMonth,listWeek',
+      },
+        initialView: 'dayGridMonth',
+
+        themeSystem: 'bootstrap',
+      //Random default events
+        events    : newArray,
+    });
+    calendar.render();
+  })
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'TrainerPage/base.html' %}
+
+{% load static %}
+
+{% block css %}
+{% endblock %}
+{% block Title %} Home {% endblock Title %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'TrainerPage' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="#"> {{ Class }}</a></li>
+<li class="breadcrumb-item"><a href="#">{{ Course.Name }}</a></li>
+<li class="breadcrumb-item"><a href="#">{{ Lesson.Name }}</a></li>
+<li class="breadcrumb-item active">Attendance</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+
+<!-- Main content -->
+<div class="content-wrapper">
+    <!-- Main content -->
+    <section class="content">
+        <div class="container">
+
+            <div class="card">
+                <div class="card-header p-2 mb-0">
+                    <h4 class="text-bold">Choose Images</h4>
+                </div>
+                <div class="card-body p-2">
+                    <div class="tab-pane" id="Images">
+                        <div class="product-image-thumbs m-0">
+                            {% for img in images %}
+                            <div class="product-image-thumb m-0">
+                                <img title="{{ img.username }}" src="/static/media/ClassRoom/{{ Class }}/{{ Course.id }}/{{ Lesson.id }}/faces/{{ img.image }}"
+                                    alt="{{ img.username }}">
+                            </div>
+                            {% endfor %}
+                            <div class="product-image-thumb m-0">
+                                <button type="button" class="btn btn-default" data-toggle="modal"
+                                    data-target="#modal-default">
+                                    <img src="https://firebasestorage.googleapis.com/v0/b/image-4bfb0.appspot.com/o/AddImage.png?alt=media&token=acc3072f-93ac-4008-97f8-d8df44c173b3" alt="Product Image">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-bold">Students</h4>
+                </div>
+                <div class="card-body">
+                    <form enctype="multipart/form-data" action="" method="POST" id="AttendanceForm">
+                        {% csrf_token %}
+                        <table class="table table-striped table-bordered projects">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%" class="text-center">
+                                        #
+                                    </th>
+                                    <th style="width: 10%" class="text-center">
+                                        Code
+                                    </th>
+                                    <th style="width: 15%" class="text-center">
+                                        Fullname
+                                    </th>
+                                    <th style="width: 15%" class="text-center">
+                                        Attendance
+                                    </th>
+                                    <th style="width: 10%" class="text-center">
+                                        Avatar
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <input type="hidden" name="Lesson" value="{{ Lesson.id }}">
+                                {% for item in students %}
+                                <tr>
+                                    <td class="text-center"> {{ forloop.counter }}</td>
+                                    <td>{{ item.Student.admin.username }}</td>
+                                    <input type="hidden" name="Students" value="{{ item.Student.admin.username }}">
+                                    <td>{{ item.Student.admin.first_name }} {{ item.Student.admin.last_name }}</td>
+                                    <td class="text-center">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input" type="radio"
+                                                            id="Absent-{{ item.Student.admin.username }}"
+                                                            name="Attendance-{{ item.Student.admin.username }}"
+                                                            value="Absent" checked>
+                                                        <label for="Absent-{{ item.Student.admin.username }}"
+                                                            class="custom-control-label">Absent</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input" type="radio"
+                                                            id="Present-{{ item.Student.admin.username }}"
+                                                            name="Attendance-{{ item.Student.admin.username }}"
+                                                            value="Present" {% if item.Status.Status == "Present" %}
+                                                            checked {% endif %}>
+                                                        <label for="Present-{{ item.Student.admin.username }}"
+                                                            class="custom-control-label">Present</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <ul class="">
+                                            <li class="list-inline-item">
+                                                <img alt="Avatar" class="profile-user-img img-fluid img-circle"
+                                                    src="{{ item.Student.admin.Avatar|GetImage }}">
+                                            </li>
+                                        </ul>
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-sm" name="_Save" value="Save">Save
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Upload Image</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form enctype="multipart/form-data" action="" method="POST" id="Images_form">
+                {% csrf_token %}
+                <div class="modal-body">
+
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" name="Url" class="custom-file-input" multiple
+                                        id="exampleInputFile">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose images</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" value="AddImage" name="_Save">Save</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.content -->
+
+<!-- ./wrapper -->
+{% endblock %}
+
+{% block js %}
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- jQuery UI -->
+<script src="{% static 'plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<!-- Page specific script -->
+<script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    });
+</script>
+
+
+{% endblock %}

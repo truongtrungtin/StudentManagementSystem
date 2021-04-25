@@ -1,0 +1,112 @@
+{% extends 'StaffPage/base.html' %}
+{% load static %}
+{% block css %}
+{% endblock css %}
+{% block Title %} {{ course.Name }} {% endblock Title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'StaffPage' %}">HOME</a></li>
+<li class="breadcrumb-item"><a href="{% url 'ListViewCourse' %}">COURSES</a></li>
+<li class="breadcrumb-item active">{{ course.Name }}</li>
+{% endblock breadcrumb %}
+{% block content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <!-- Profile Image -->
+                <div class="card card-success card-outline">
+
+                    <div class="card-header">
+                        <h4>Information</h4>
+                    </div>
+
+                    <div class="card-body box-profile">
+
+                        <h5><b>Category:</b> {{ course.Category.Name }}</h5>
+                        <h5><b>Course:</b> {{ course.Name }}</h5>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+            <!-- /.col -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#Update" data-toggle="tab">Lessons</a>
+                            </li>
+                        </ul>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="Update">
+                                {% for item in lessons %}
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <input type="text" value="{{ item.Name }}"
+                                                class="form-control form-control">
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="btn btn-warning" href="#Update" data-toggle="tab">Edit</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <!-- /.tab-content -->
+                    </div><!-- /.card-body -->
+                    <div class="card-footer">
+                        <nav aria-label="Contacts Page Navigation">
+                            <ul class="pagination justify-content-center m-0">
+                                {% if lessons.paginator.count > 12 %}
+                                {% if lessons.has_previous %}
+                                <li class="page-item "><a class="page-link" href="?page=1">First</a></li>
+                                {% endif %}
+                                {% for num in lessons.paginator.page_range %}
+
+                                {% if lessons.number == num %}
+                                <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                                {% elif num > lessons.number|add:'-3' and num < lessons.number|add:'3' %} <li
+                                    class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% if lessons.has_next %}
+                                    <li class="page-item"><a class="page-link"
+                                            href="?page={{ lessons.paginator.num_pages }}">Last</a>
+                                    </li>
+                                    {% endif %}
+                                    {% endif %}
+
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <!-- /.nav-tabs-custom -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+{% endblock %}
+{% block js %}
+<!-- InputMask -->
+<script src="{% static 'plugins/inputmask/min/jquery.inputmask.bundle.min.js' %}"></script>
+<script>
+    //Datemask dd/mm/yyyy
+    $('[data-mask]').inputmask()
+</script>
+<!-- bs-custom-file-input -->
+<script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    });
+</script>
+{% endblock %}

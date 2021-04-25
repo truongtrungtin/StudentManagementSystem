@@ -1,0 +1,23 @@
+{% load static %}
+
+<!-- Main content -->
+<section class="content">
+    <form enctype="multipart/form-data" action="{% url 'CreateClassRoom' %}" method="POST" id="classroom_form">
+        {% csrf_token %}
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="Name">ClassRoom</label>
+                        <input type="text" class="form-control form-control-sm" name="Name" id="Name"
+                               placeholder="Enter a ClassRoom" required>
+
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+            <button type="submit" class="btn btn-primary btn-sm" name="_Save">Save</button>
+        </div>
+    </form>
+</section>
+

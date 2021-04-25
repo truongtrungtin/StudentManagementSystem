@@ -1,0 +1,88 @@
+{% load static %}
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.css' %}">
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+<style>
+    @media (min-width: 576px)
+    {
+        .modal-dialog {
+            max-width: 600px;
+            margin: 1.75rem auto;
+        }
+    }
+
+</style>
+<section class="content">
+        <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" class="form-control form-control-sm" name="first_name"
+                               id="first_name" placeholder="Enter First Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" class="form-control form-control-sm" name="last_name"
+                               id="last_name" placeholder="Enter Last Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="faculty">Faculty</label>
+                        <select class="form-control form-control-sm select2" id="faculty" name="faculty" data-placeholder="Choose Faculty" required style="width: 100%">
+                            <option value=""></option>
+                            {% for item in faculties %}
+                                <option value="{{ item.pk }}">{{ item.Name }} - {{ item.Descriptions }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthday">BirthDay</label>
+                        <div class="input-group date" id="birthday" data-target-input="nearest">
+                            <input type="text" name="birthday" data-target="#birthday" required
+                                   class="form-control form-control-sm" data-inputmask-alias="datetime"
+                                   data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                            <div class="input-group-append" data-target="#birthday" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="telephone">Telephone</label>
+                        <input type="text" class="form-control form-control-sm" name="telephone" id="telephone"
+                               data-inputmask="'mask': ['999 999 999[9]', '+099 999 999 99[9]']" data-mask-1 required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control form-control-sm" name="email" id="email"
+                               placeholder="Enter Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" class="form-control form-control-sm" name="address"
+                               id="address" placeholder="Enter Address">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm" name="_CreateProfile">Save</button>
+                </div>
+        </div>
+        <!-- /.nav-tabs-custom -->
+        <!-- /.row -->
+</section>
+
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+<!-- InputMask -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<script>
+    //Datemask dd/mm/yyyy
+    $('[data-mask]').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+    $('#birthday').datetimepicker({
+        format: 'DD/MM/YYYY',
+    });
+    $('[data-mask-1]').inputmask();
+    $('.select2').select2()
+</script>
+<!-- AdminLTE App -->

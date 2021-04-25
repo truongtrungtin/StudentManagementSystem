@@ -1,0 +1,172 @@
+{% extends 'StaffPage/base.html' %}
+{% load static %}
+{% block css %}
+{% endblock css %}
+{% block Title %} COURSES {% endblock Title %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'StaffPage' %}">HOME</a></li>
+<li class="breadcrumb-item active">COURSES</li>
+{% endblock breadcrumb %}
+{% block content %}
+<form action="{% url "CreateCourse" %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="MyModalCreate">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="ModalTitle" class="card-title text-bold">CREATE A NEW COURSE</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                </div>
+                <div class="modal-body" id="myModalBodyDivCreate">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="modal fade" id="MyModalEdit">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="ModalTitle" class="card-title mb-0">EDIT A COURSE</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+            </div>
+            <div class="modal-body" id="myModalBodyDivEdit">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card card-solid">
+        <div class="card-header">
+            <a href="#" onclick='CreateCourses()' class="btn btn-sm btn-success">CREATE A NEW COURSE</a>
+        </div>
+        {# <div class="card-header">#}
+{#            <h3><b>{{ class.Name }} </b> <a type="button" class="btn btn-sm btn-success"#}
+{#                    href="{% url 'AddCourseToClass' class.Name %}">Manage</a></h3>#}
+            {# </div>#}
+        <div class="card-body ">
+            <table class="table table-striped table-bordered projects">
+                <thead>
+                    <tr>
+                        <th style="width: 5%" class="text-center">
+                            No.
+                        </th>
+                        <th style="width: 5%" class="text-center">
+                            Faculty
+                        </th>
+                        <th style="width: 20%" class="text-center">
+                            Course
+                        </th>
+                        <th style="width: 5%" class="text-center">
+                            Lessons
+                        </th>
+
+                        <th style="width: 5%" class="text-center">
+                            Status
+                        </th>
+                        <th style="width: 20%" class="text-center">
+                            #
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in courses %}
+                    <tr>
+                        <td class="text-center">
+                            {{ forloop.counter }}
+                        </td>
+                        <td class="text-center" title="{{ item.faculty.Descriptions }}">{{ item.faculty.Name }}</td>
+                        <td>{{ item.Name }} - {{ item.Descriptions }}</td>
+                        <td class="text-center">{{ item.lessons_set.all.count }}</td>
+
+
+
+                        <td class="project-state">
+                            {% if item.IsActive %} <span class="badge badge-success">Active</span> {% else %}
+                            <span class="badge badge-danger">Inactive</span> {% endif %}
+                        </td>
+                        <td class="project-actions text-center">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ item.id }}">
+                                <a class="btn btn-primary btn-sm" href="{% url 'DetailCourse' item.id %}">
+                                    <i class="fas fa-tasks"> Detail</i>
+                                </a>
+                                <a class="btn btn-info btn-sm" href="#" onclick='EditCourses("{{ item.id }}")'>
+                                    <i class="fas fa-pencil-alt"> Edit</i>
+                                </a>
+
+                                {% if item.IsActive %}
+                                <input type="hidden" name="IsActive" value="false">
+                                <button type="submit" class="btn btn-danger btn-sm" name="Status" value="Lock">
+                                    <i class="fas fa-lock"> Lock </i>
+                                </button>
+                                {% else %}
+                                <input type="hidden" name="IsActive" value="true">
+                                <button class="btn btn-success btn-sm" name="Status" value="Unlock">
+                                    <i class="fas fa-lock-open"> Unlock</i>
+                                </button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+            <nav aria-label="Contacts Page Navigation">
+                <ul class="pagination justify-content-center m-0">
+                    {% if courses.paginator.count > 30 %}
+                    {% if courses.has_previous %}
+                    <li class="page-item "><a class="page-link" href="?page=1">First</a></li>
+                    {% endif %}
+                    {% for num in courses.paginator.page_range %}
+
+                    {% if courses.number == num %}
+                    <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% elif num > courses.number|add:'-3' and num < courses.number|add:'3' %} <li class="page-item"><a
+                            class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if courses.has_next %}
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{ courses.paginator.num_pages }}">Last</a>
+                        </li>
+                        {% endif %}
+                        {% endif %}
+
+                </ul>
+            </nav>
+        </div>
+        <!-- /.card-footer -->
+    </div>
+    <!-- /.card -->
+
+</section>
+<!-- /.content -->
+{% endblock %}
+{% block js %}
+<script>
+    var CreateCourses = function () {
+        var url = "{% url "CreateCourse" %}";
+        $("#myModalBodyDivCreate").load(url, function () {
+            $("#MyModalCreate").modal();
+        });
+    };
+
+    function EditCourses(Id) {
+        var url = "/StaffPage/Courses/" + Id + "/Update/";
+        $("#myModalBodyDivEdit").load(url, function () {
+            $("#MyModalEdit").modal();
+        });
+    }
+</script>
+{% endblock js %}

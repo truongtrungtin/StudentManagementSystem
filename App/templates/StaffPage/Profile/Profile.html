@@ -1,0 +1,228 @@
+{% extends 'StaffPage/base.html' %}
+{% load static %}
+{% block css %}
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+{% endblock css %}
+{% block Title %} PROFILE {% endblock Title %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'StaffPage' %}">HOME</a></li>
+<li class="breadcrumb-item active">PROFILE</li>
+{% endblock breadcrumb %}
+{% block content %}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <!-- Profile Image -->
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        <div class="text-center">
+                            <img class="profile-user-img img-fluid img-circle" src="{{ user.Avatar|GetImage }}"
+                                alt="User profile picture">
+                        </div>
+                        <h3 class="profile-username text-center">{{ user.first_name }}
+                            {{ user.last_name }}</h3>
+                        <p class="text-muted text-center">{{ user.email }}</p>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <!-- About Me Box -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">About Me</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <strong><i class="fas fa-book mr-1"></i>Role</strong>
+
+                        <p class="text-muted">
+                            Staff
+                        </p>
+                        <hr>
+                        <strong><i class="fas fa-phone mr-1"></i>Telephone</strong>
+                        <p class="text-muted">{{ user.telephone }}</p>
+                        <hr>
+                        <strong><i class="fas fa-map-pin mr-1"></i>Address</strong>
+                        <p class="text-muted">{{ user.address }}</p>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#profile"
+                                    data-toggle="tab">Profile</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href="#changepassword" data-toggle="tab">Change
+                                    password</a></li>
+                        </ul>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="profile">
+                                <!-- Post -->
+
+                                <form enctype="multipart/form-data" action="" method="POST" id="Profile_form">
+                                    {% csrf_token %}
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="Fullname">Fullname</label>
+                                            <input type="text" readonly class="form-control form-control-sm"
+                                                id="Fullname" value="{{ user.first_name }} {{ user.last_name }}"
+                                                placeholder="Enter Fullname">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="username">Username</label>
+                                            <input type="text" readonly class="form-control form-control-sm"
+                                                value="{{ user.username }}" id="username" placeholder="Enter Username">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="birthday">BirthDay</label>
+                                            <div class="input-group date" id="birthday" data-target-input="nearest">
+                                                <input type="text" name="birthday"
+                                                    value="{{ user.birthday|date:'d/m/Y' }}" data-target="#birthday"
+                                                    required class="form-control form-control-sm"
+                                                    data-inputmask-alias="datetime"
+                                                    data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                                                <div class="input-group-append" data-target="#birthday"
+                                                    data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="telephone">Telephone</label>
+                                            <input type="text" class="form-control form-control-sm"
+                                                value="{{ user.telephone }}" name="telephone" id="telephone"
+                                                data-inputmask="'mask': ['999 999 999[9]', '+099 999 999 99[9]']"
+                                                data-mask-1 />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input type="email" class="form-control form-control-sm" name="email"
+                                                value="{{ user.email }}" id="email" placeholder="Enter Email">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="address">Address</label>
+                                            <input type="text" class="form-control form-control-sm" name="address"
+                                                value="{{ user.address }}" id="address" placeholder="Enter Address">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Avatar">Avatar</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" name="Avatar" class="custom-file-input"
+                                                        id="Avatar">
+                                                    <label class="custom-file-label" for="Avatar">
+                                                        {% if user.Avatar == None %}
+                                                        Choose avatar
+                                                        {% else %}
+                                                        {{ user.Avatar }}
+                                                        {% endif %}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm" name="_ChangeProfile">Save
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <!-- /.post -->
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="changepassword">
+                                <!-- The timeline -->
+                                <form enctype="multipart/form-data" action="" method="POST" id="ChangePassword_form">
+                                    {% csrf_token %}
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="oldpassword">Old password</label>
+                                            <input type="password" name="oldpassword"
+                                                class="form-control form-control-sm" id="oldpassword" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="newpassword">New password</label>
+                                            <input type="password" name="newpassword"
+                                                class="form-control form-control-sm" id="newpassword" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="confirmpasswordn">Confirm new password</label>
+                                            <input type="password" name="confirmpassword"
+                                                class="form-control form-control-sm" id="confirmpassword" />
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary btn-sm" disabled
+                                            id="changepassword-submit" name="_ChangePassword">Save
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.tab-pane -->
+                        </div>
+                        <!-- /.tab-content -->
+                    </div><!-- /.card-body -->
+                </div>
+                <!-- /.nav-tabs-custom -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+
+{% endblock %}
+{% block js %}
+<!-- InputMask -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<script>
+    //Datemask dd/mm/yyyy
+    $('[data-mask]').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    $('#birthday').datetimepicker({
+        format: 'DD/MM/YYYY',
+    });
+    $('[data-mask-1]').inputmask();
+</script>
+<!-- bs-custom-file-input -->
+<script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    });
+    $('#newpassword, #confirmpassword, #oldpassword').on('keyup', function () {
+        if ($('#oldpassword').val() != '') {
+            $('#oldpassword').css('border', '2px solid green');
+            if ($('#newpassword').val() != '') {
+                if ($('#newpassword').val() == $('#confirmpassword').val()) {
+                    $('#confirmpassword').css('border', '2px solid green');
+                    $('#newpassword').css('border', '2px solid green');
+                    $('#changepassword-submit').removeAttr('disabled');
+                } else {
+                    $('#confirmpassword').css('border', '2px solid red');
+                    $('#newpassword').css('border', '2px solid red');
+
+                }
+
+            }
+        } else {
+            $('#oldpassword').css('border', '2px solid red');
+        }
+    });
+
+</script>
+
+{% endblock %}

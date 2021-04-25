@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>FPT ATTENDANCE</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %} ">
+
+    {% block css  %}
+    {% endblock %}
+    <!-- Toastr -->
+    <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %} ">
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed sidebar-collapse">
+    <div class="wrapper">
+        {% include 'AdminPage/navbar.html' %}
+        <div class="content-wrapper">
+            {% if messages %}
+            {% for message in messages %}
+            <div id="toast-container" class="toast-top-right">
+                <div class="toast toast-{{ message.tags }}" aria-live="polite" style="">
+                    <div class="toast-message">{{ message }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1><b>{% block Title %}{% endblock Title %}</b></h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                {% block breadcrumb %}
+
+                                {% endblock breadcrumb %}
+
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+            {% block content  %}
+            <!-- Content Header (Page header) -->
+
+            {% endblock %}
+        </div>
+        {% include 'AdminPage/footer.html' %}
+    </div>
+    <!-- jQuery -->
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <!-- Bootstrap 4 -->
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- Toastr -->
+    <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+    {% block js  %}
+    {% endblock %}
+    <script>
+        $('#toast-container').delay(2000).slideUp(500);
+    </script>
+    <!-- AdminLTE App -->
+    <script src="{% static 'dist/js/adminlte.min.js' %} "></script>
+</body>
+
+</html>

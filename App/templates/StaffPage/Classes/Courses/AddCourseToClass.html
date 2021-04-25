@@ -1,0 +1,69 @@
+{% extends 'StaffPage/base.html' %}
+{% load static %}
+{% block css %}
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+{% endblock css %}
+{% block Title %} {{ class.Name }} - Course management {% endblock Title %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'StaffPage' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'ListViewClass' %}">Class list</a></li>
+<li class="breadcrumb-item"><a href="{% url 'ViewCourseInClass' class.Name %}">{{ class.Name }}</a></li>
+<li class="breadcrumb-item active">Manage</li>
+{% endblock breadcrumb %}
+{% block content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container">
+        <form enctype="multipart/form-data" action="" method="POST" id="classes_form">
+            {% csrf_token %}
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3>Courses</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <select class="duallistbox" name="Courses" multiple="multiple">
+                                    {% for course in coursesNoneClass %}
+                                    <option value="{{ course.id }}">{{ course.Name }}</option>
+                                    {% endfor %}
+                                    {% for course in coursesInClass %}
+                                    <option value="{{ course.Course.id }}" selected>{{ course.Course.Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" name="_Save">Save</button>
+            <!-- /.nav-tabs-custom -->
+        </form>
+    </div><!-- /.container-fluid -->
+</section>
+
+{% endblock %}
+{% block js %}
+<!-- InputMask -->
+<script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+<!-- bs-custom-file-input -->
+<script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+<script>
+    //Datemask dd/mm/yyyy
+    $('[data-mask]').inputmask()
+    $('.duallistbox').bootstrapDualListbox({
+        nonSelectedListLabel: 'Course is not in class\n ',
+        selectedListLabel: 'Course in class\n',
+    })
+</script>
+
+{% endblock %}

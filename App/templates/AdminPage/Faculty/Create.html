@@ -1,0 +1,44 @@
+{% extends 'StaffPage/base.html' %}
+{% load static %}
+{% block css %}
+{% endblock css %}
+{% block Title %} CREATE NEW FACULTY {% endblock Title %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'StaffPage' %}">HOME</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'ListViewFaculty' %}">FACULTY</a></li>
+    <li class="breadcrumb-item active">Create</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+        <form enctype="multipart/form-data" action="" method="POST" id="faculties_form">
+            {% csrf_token %}
+            <div class="container">
+                <div class="card">
+                    <div class="card-header p-1">
+                        <h3 class="text-bold">Create</h3>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="Name">Faculity</label>
+                            <input type="text" class="form-control form-control-sm" name="Name" id="Name"
+                                   placeholder="Enter a faculity name" required>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="Description">Descriptions</label>
+                            <input type="text" class="form-control form-control-sm" name="Descriptions" id="Descriptions"
+                                   placeholder="Enter description">
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+                <button type="submit" class="btn btn-primary btn-sm" name="_Save">Save</button>
+            </div>
+        </form>
+    </section>
+
+
+{% endblock %}
+{% block js %}
+{% endblock %}

@@ -1,0 +1,100 @@
+{% load static %}
+
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.css' %}">
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+
+<!-- Main content -->
+<section class="content">
+    <div class="card card-primary card-outline">
+        <div class="card-body">
+            <form enctype="multipart/form-data" action="/StaffPage/Students/Edit/{{ student.admin.username }}/"
+                method="POST" id="Profile_form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="Fullname">Fullname</label>
+                    <input type="text" readonly class="form-control form-control-sm" id="Fullname"
+                        value="{{ student.admin.first_name }} {{ student.admin.last_name }}" id="Fullname"
+                        placeholder="Enter Fullname">
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" readonly class="form-control form-control-sm" name="username"
+                        value="{{ student.admin.username }}" id="username" placeholder="Enter Username">
+                </div>
+                <div class="form-group">
+                    <label for="birthday">BirthDay</label>
+                    <div class="input-group date" id="birthday" data-target-input="nearest">
+                        <input type="text" name="birthday" value="{{ student.admin.birthday|date:'d/m/Y' }}"
+                            data-target="#birthday" required class="form-control form-control-sm"
+                            data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                        <div class="input-group-append" data-target="#birthday" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="telephone">Telephone</label>
+                    <input type="text" class="form-control form-control-sm form-control form-control-sm-sm"
+                        value="{{ student.admin.telephone }}" name="telephone" id="telephone"
+                        data-inputmask="'mask': ['999 999 999[9]', '+099 999 999 99[9]']" data-mask-1 />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control form-control-sm" name="email"
+                        value="{{ student.admin.email }}" id="email" placeholder="Enter Email" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" class="form-control form-control-sm" name="address"
+                        value="{{ student.admin.address }}" id="address" placeholder="Enter Address">
+                </div>
+                {# <div class="form-group">#}
+                    {# <label for="faculty">Faculty</label>#}
+                    {# <select class="form-control form-control-sm select2" data-placeholder="Choose Faculty" #}
+                     {#   name="faculty" required id="faculty">#}
+                        {# {% if student.admin.faculty != None %}#}
+                        {# <option value="{{ student.admin.faculty.id }}">{{ student.admin.faculty.Name }}#}
+                            {# - {{ student.admin.faculty.Descriptions }} </option>#}
+                        {# {% else %}#}
+                        {# <option></option>#}
+                        {# {% endif %}#}
+                        {# {% for item in faculties %}#}
+                        {# {% if item.id != student.admin.faculty.id %}#}
+                        {# <option value="{{ item.id }}">{{ item.Name }} - {{ item.Descriptions }}</option>#}
+                        {# {% endif %}#}
+                        {# {% endfor %}#}
+                        {# </select>#}
+                    {# </div>#}
+
+                <button type="submit" class="btn btn-primary btn-sm" value="ChangeProfile" name="_Save">Save
+                </button>
+
+            </form>
+        </div>
+        <!-- /.tab-content -->
+    </div><!-- /.card-body -->
+</section>
+
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+<!-- InputMask -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+<script>
+    //Datemask dd/mm/yyyy
+    $('[data-mask]').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    $('#birthday').datetimepicker({
+        format: 'DD/MM/YYYY',
+    });
+    $('[data-mask-1]').inputmask();
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    });
+    $('.select2').select2({})
+</script>

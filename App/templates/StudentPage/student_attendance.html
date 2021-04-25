@@ -1,0 +1,56 @@
+{% extends 'StudentPage/base.html' %}
+{% block css %}
+{% endblock css %}
+{% block Title %}
+{{ course.Name }} - {{ course.Descriptions }}
+{% endblock Title %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'StudentPage' %}">HOME</a></li>
+<li class="breadcrumb-item"><a href="{% url 'StudentViewCourses' %}">My Courses</a></li>
+<li class="breadcrumb-item active">{{ course.Name }}</li>
+{% endblock breadcrumb %}
+{% block content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-bordered table-striped table-responsive-sm table-hover" >
+                    <thead>
+                        <tr>
+                            <th>NO.</th>
+                            <th>DATE</th>
+                            <th>SLOT</th>
+                            <th>TRAINER</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in attendances %}
+                        <tr>
+                            <td> {{ forloop.counter }}</td>
+                            <td>{{item.Date|date:'d/m/Y'}}</td>
+                            <td>{{item.Slot.Slot }}</td>
+
+                            <td>{{ item.ClassCourse.Trainer.admin.first_name }}
+                                {{item.ClassCourse.Trainer.admin.last_name }}</td>
+                            <td
+                                class="{% if item.Status.Status == 'Present' %}text-success {% elif item.Status.Status == 'Absent' %} text-danger {% endif %}">
+                                {{ item.Status.Status }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5">ABSENT: {{ attendances_percent }} % ({{ attendances_absent.count }} ABSENT ON {{ attendances.count }} TOTAL)</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- /.content -->
+{% endblock content %}

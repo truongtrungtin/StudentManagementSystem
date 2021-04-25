@@ -1,0 +1,31 @@
+{% load static %}
+<section class="content">
+        <form enctype="multipart/form-data" action="{% url 'UpdateSlot' slots.id %}" method="POST" id="faculties_form">
+            {% csrf_token %}
+            <div class="container">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="Slot">Slot</label>
+                            <input type="text" class="form-control form-control-sm" name="Slot" id="Slot" value="{{ slots.Slot }}"
+                                   placeholder="Enter a Slot" required>
+
+                        </div>
+                        <div class="form-group">
+                        <label for="StartTime">StartTime</label>
+                        <input type="time" class="form-control form-control-sm" value="{{ slots.StartTime|time:"H:i"  }}" name="StartTime" id="StartTime" required>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="EndTime">EndTime</label>
+                        <input type="time" class="form-control form-control-sm" value="{{ slots.EndTime|time:"H:i"  }}" name="EndTime" id="EndTime" required>
+
+                    </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+                <button type="submit" class="btn btn-primary btn-sm" name="_Save">Save</button>
+            </div>
+        </form>
+    </section>
+

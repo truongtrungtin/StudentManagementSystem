@@ -1,0 +1,39 @@
+{% extends 'TrainerPage/base.html' %}
+{% block Title %}
+My Courses
+{% endblock Title %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active">My Courses</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container">
+          <div class="row">
+              {% for item in courses %}
+                  <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
+                      <a href="">
+                          <div class="card card-primary card-outline">
+                              <div class="card-header p-0">
+                                  <h2 class="text-bold align-middle text-center p-0">
+                                      ({{ item.Course.Name }}) <br> {{ item.Course.Descriptions }}
+                                  </h2>
+                              </div>
+                              <div class="card-body pt-1 pb-0"> 
+                                  <p class="text-muted text-sm"><b>Class:</b> {{ item.Class }} </p>
+                                  <p class="text-muted text-sm"><b>Start date: </b> {{ item.StartDate }}</p>
+                                  <p class="text-muted text-sm"><b>End date: </b> {{ item.EndDate }} </p>
+                              </div>
+                          </div>
+                      </a>
+
+                  </div>
+              {% endfor %}
+          <!-- ./col -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock content %}
+{% block js %}
+{% endblock js %}

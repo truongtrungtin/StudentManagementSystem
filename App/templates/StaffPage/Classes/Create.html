@@ -1,0 +1,103 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+
+<section class="content">
+    <form enctype="multipart/form-data" action="{% url 'CreateClass' %}" method="POST" id="classes_form" >
+        {% csrf_token %}
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="Name">Class name</label>
+                        <input type="text" class="form-control form-control-sm" name="Name" id="Name"
+                               placeholder="Enter class name">
+                    </div>
+                    {#          <div class="form-group">#}
+                    {#            <label for="StartDate">Start Day</label>#}
+                    {#            <div class="input-group">#}
+                    {#              <div class="input-group-prepend">#}
+                    {#                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>#}
+                    {#              </div>#}
+                    {#              <input type="text" id="StartDate" class="form-control form-control-sm" name="StartDate" data-inputmask-alias="datetime"#}
+                    {#                data-inputmask-inputformat="dd/mm/yyyy" data-mask>#}
+                    {#            </div>#}
+                    {#          </div>#}
+                </div>
+            </div>
+            <!-- /.nav-tabs-custom -->
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">Add Students</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i
+                                class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <select class="duallistbox" name="Username" multiple="multiple">
+                                    {% for student in studentsNoneClass %}
+                                        <option value="{{ student.admin.username }}">{{ student.admin.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">Add Courses</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i
+                                class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <select class="duallistbox" name="Courses" multiple="multiple">
+                                    {% for course in courses %}
+                                        <option value="{{ course.id }}">{{ course.Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.container-fluid -->
+            <button type="submit" class="btn btn-primary btn-sm" name="_Save">Save</button>
+        </div>
+    </form>
+</section>
+<!-- InputMask -->
+<script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+<!-- bs-custom-file-input -->
+<script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+<script>
+    //Datemask dd/mm/yyyy
+    $('[data-mask]').inputmask({});
+    $('.duallistbox').bootstrapDualListbox()
+</script>

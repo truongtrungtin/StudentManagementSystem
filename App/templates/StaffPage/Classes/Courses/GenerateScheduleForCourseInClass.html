@@ -1,0 +1,49 @@
+{% load static %}
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.css' %}">
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+
+<section class="content">
+    <div class="container">
+        <div class="card card-primary">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="LessonsPerWeek">Lessons Per Week</label>
+                    <input type="number" class="form-control form-control-sm" min="0" max="6" id="LessonsPerWeek"
+                        name="LessonsPerWeek" required />
+                </div>
+                <div class="form-group">
+                    <label for="startTime">Start Time</label>
+                    <div class="input-group date" data-target-input="nearest">
+                        <input type="text" name="startTime" id="startTime" data-target="#startTime" required
+                            class="form-control form-control-sm" data-inputmask-alias="datetime"
+                            data-inputmask-inputformat="dd/mm/yyyy" data-mask />
+                        <div class="input-group-append" data-target="#startTime" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.container-fluid -->
+        <button type="submit" class="btn btn-primary btn-sm" name="_Save">Save</button>
+    </div>
+</section>
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+<!-- InputMask -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<script>
+    //Datemask dd/mm/yyyy
+    $('[data-mask]').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    $('#startTime').datetimepicker({
+        format: 'DD/MM/YYYY',
+    });
+    $('.select2').select2()
+</script>

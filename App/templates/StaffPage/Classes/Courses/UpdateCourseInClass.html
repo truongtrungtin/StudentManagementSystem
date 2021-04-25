@@ -1,0 +1,192 @@
+{% extends 'StaffPage/base.html' %}
+{% load static %}
+{% block css %}
+
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.css' %}">
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+{% endblock css %}
+{% block Title %} {{ ClassCourse.Class.Name }} - Course: {{ ClassCourse.Course.Name }} {% endblock Title %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'StaffPage' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'ListViewClass' %}">Classes</a></li>
+<li class="breadcrumb-item">
+    <a href="{% url 'ViewCourseInClass' ClassCourse.Class.Name %}">
+        {{ ClassCourse.Class.Name}}
+    </a>
+</li>
+<li class="breadcrumb-item">
+    <a href="{% url 'UpdateCourseInClass' ClassCourse.Class.Name ClassCourse.Course.id %}">
+        {{ClassCourse.Course.Name }}
+    </a>
+</li>
+<li class="breadcrumb-item active">Calendar</li>
+{% endblock breadcrumb %}
+{% block content %}
+<!-- Main content -->
+    <form action="{% url "ScheduleOfCoursesInClass" ClassCourse.Class.Name ClassCourse.Course.id %}" method="POST">
+        {% csrf_token %}
+        <div class="modal fade" id="MyModalGenerateSchedule">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="ModalTitle" class="card-title text-bold">GENERATE SCHEDULE</h5>
+                        <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                    </div>
+                    <div class="modal-body" id="myModalBodyDivGenerateSchedule">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+<section class="content">
+    <div class="container">
+        <form enctype="multipart/form-data" action="" method="POST" id="classes_form">
+            <div class="card">
+                <div class="card-header p-10">
+                    <h3 class="card-title text-bold">
+                        Trainer
+                        {% if attendance.count > 0 %}
+                            <a href="#" onclick='GenerateSchedule()' class="btn btn-sm btn-success">Generate Schedule</a>
+                        {% endif %}
+                    </h3>
+                </div><!-- /.card-header -->
+                {% csrf_token %}
+                <div class="card-body">
+                    <div class="form-group">
+                        <select class="form-control form-control-sm select2" name="Trainer" style="width: 100%">
+                            {% if ClassCourse.Trainer != None %}
+                            <option value="{{ ClassCourse.Trainer.id }}">
+                                {{ ClassCourse.Trainer.admin.first_name }} {{ClassCourse.Trainer.admin.last_name }}
+                            </option>
+                            {% else %}
+                            <option> -- Choose Trainer --</option>
+                            {% endif %}
+                            {% for item in trainers %}
+                            {% if item.admin.username != ClassCourse.Trainer.admin.username %}
+                            <option value="{{ item.id }}">{{ item.admin.first_name }} {{ item.admin.last_name }}
+                            </option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+            {% for item in Attendance %}
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">{{ item.Lesson.Name }}</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i
+                                class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="Date-{{ item.Lesson.id }}">Date:</label>
+                                <div class="input-group date">
+                                    <input type="text" name="Date-{{ item.Lesson.id }}" id="Date-{{ item.Lesson.id }}"
+                                        value="{{ item.Date|date:'d/m/Y' }}" data-target="#Date-{{ item.Lesson.id }}"
+                                        class="form-control form-control-sm" data-inputmask-alias="datetime"
+                                        data-inputmask-inputformat="dd/mm/yyyy" data-mask />
+                                    <div class="input-group-append" data-target="#Date-{{ item.Lesson.id }}"
+                                        data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label>Slot:</label>
+                                <div class="input-group">
+                                    <select class="form-control form-control-sm select2"
+                                        name="Slot-{{ item.Lesson.id }}" required>
+                                        {% if item.Slot != None %}
+                                        <option value="{{ item.Slot.id }}">
+                                            {{ item.Slot.Slot }} ({{item.Slot.StartTime|date:"H:i"}} - {{ item.Slot.EndTime|date:"H:i" }})
+                                        </option>
+                                        {% else %}
+                                        <option>-- Choose a Slot --</option>
+                                        {% endif %}
+                                        {% for slot in Slot %}
+                                        {% if slot.id != item.Slot.id %}
+                                        <option value="{{ slot.id }}">{{ slot.Slot }} ({{ slot.StartTime|date:"H:i" }} -
+                                            {{ slot.EndTime|date:"H:i" }})</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label>Room:</label>
+                                <select class="form-control form-control-sm select2"
+                                    name="Classroom-{{ item.Lesson.id }}" required>
+                                    {% if item.ClassRoom != None %}
+                                    <option value="{{ item.ClassRoom.id }}">{{ item.ClassRoom.Name }}</option>
+                                    {% else %}
+                                    <option>-- Choose a Room --</option>
+                                    {% endif %}
+                                    {% for room in Classroom %}
+                                    {% if room.id != item.ClassRoom.id %}
+                                    <option value="{{ room.id }}">{{ room.Name }}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-sm" name="_Save">Save</button>
+            <!-- /.nav-tabs-custom -->
+        </form>
+    </div><!-- /.container-fluid -->
+</section>
+
+{% endblock %}
+{% block js %}
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+<!-- InputMask -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<!-- bs-custom-file-input -->
+<script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+
+<script>
+
+    $('.select2').select2({
+        theme: 'bootstrap4'
+    })
+    //Datemask dd/mm/yyyy
+
+    $('[data-mask]').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    {% for item in Attendance %}
+    $('#Date-{{ item.Lesson.id }}').datetimepicker({
+        format: 'DD/MM/YYYY',
+    });
+    {% endfor %}
+    function GenerateSchedule() {
+        var url = "/StaffPage/Classes/{{ ClassCourse.Class.Name }}/Course/{{ ClassCourse.Course.id }}/Schedule";
+        $("#myModalBodyDivGenerateSchedule").load(url, function () {
+            $("#MyModalGenerateSchedule").modal();
+        });
+    }
+</script>
+
+{% endblock %}

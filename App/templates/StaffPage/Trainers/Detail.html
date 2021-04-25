@@ -1,0 +1,243 @@
+{% extends 'StaffPage/base.html' %}
+{% load static %}
+{% block css %}
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet"
+          href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+{% endblock css %}
+{% block Title %}TRAINER ACCOUNT {% endblock Title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'StaffPage' %}">HOME</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'ListViewAccountTrainers' %}">TRAINER LIST</a></li>
+    <li class="breadcrumb-item active">{{ trainer.admin.username }}</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="modal fade" id="MyModalEdit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="ModalTitle" class="card-title mb-0">Edit Account</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                </div>
+                <div class="modal-body" id="myModalBodyDivEdit">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <!-- Profile Image -->
+                    <div class="card card-primary card-outline">
+                        <div class="card-body box-profile">
+                            <div class="text-center">
+                                <img class="profile-user-img img-fluid img-circle" src="{{ trainer.admin.Avatar|GetImage }}"
+                                     alt="User profile picture">
+                            </div>
+
+                            <h3 class="profile-username text-center">{{ trainer.admin.first_name }} {{ trainer.admin.last_name }}</h3>
+
+                            <p class="text-muted text-center">{{ trainer.admin.email }}</p>
+
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title text-bold">About</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <strong><i class="fas fa-book mr-1"></i>Role</strong>
+
+                            <p class="text-muted">
+                                Trainer
+                            </p>
+                            <hr>
+                            <strong><i class="fas fa-braille mr-1"></i>Faculty</strong>
+                            <p class="text-muted">{% if trainer.admin.faculty != None %}
+                                {{ trainer.admin.faculty.Descriptions }} {% else %} None {% endif %}</p>
+                            <hr>
+                            <strong><i class="fas fa-calendar mr-1"></i>Date joined</strong>
+                            <p class="text-muted">{{ trainer.admin.date_joined|date:'M. d, Y'}}</p>
+                            <hr>
+                            <strong><i class="fas fa-map-pin mr-1"></i>Status</strong>
+                            <div>
+                                {% if trainer.admin.is_active %}
+                                    <p class="text-success float-left">Active</p>
+                                {% else %}
+                                    <p class="text-danger float-left">Inactive</p>
+                                {% endif %}
+                                <div class="float-right">
+                                    <form action="" method="POST">
+                                        <input type="hidden" name="username" value="{{ trainer.admin.username }}">
+                                        {% csrf_token %}
+                                        {% if trainer.admin.is_active %}
+                                            <input type="hidden" name="is_active" value="false">
+                                            <button type="submit" class="btn btn-danger btn-sm" name="_Status" value="Lock">
+                                                <i class="fas fa-lock"> Lock </i>
+                                            </button>
+                                        {% else %}
+                                            <input type="hidden" name="is_active" value="true">
+                                            <button class="btn btn-success btn-sm" name="_Status" value="Unlock">
+                                                <i class="fas fa-lock-open"> Unlock</i>
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-md-9">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#Information"
+                                                        data-toggle="tab">Information</a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link" href="##" data-toggle="tab">#</a>
+                                </li>
+                            </ul>
+                        </div><!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="active tab-pane" id="Information">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                              <div class="form-group">
+                                            <label for="Fullname">Fullname</label>
+                                            <input type="text" readonly class="form-control form-control-sm" id="Fullname"
+                                                   value="{{ trainer.admin.first_name }} {{ trainer.admin.last_name }}"
+                                                   id="Fullname" placeholder="Enter Fullname">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="username">Username</label>
+                                            <input type="text" readonly class="form-control form-control-sm" name="username"
+                                                   value="{{ trainer.admin.username }}" id="username"
+                                                   placeholder="Enter Username">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="birthday">BirthDay</label>
+                                            <div class="input-group date" id="birthday" data-target-input="nearest">
+                                                <input type="text" name="birthday"
+                                                       value="{{ trainer.admin.birthday|date:'d/m/Y' }}"
+                                                       data-target="#birthday"
+                                                       class="form-control form-control-sm"
+                                                       data-inputmask-alias="datetime"
+                                                       data-inputmask-inputformat="dd/mm/yyyy" data-mask readonly>
+                                                <div class="input-group-append" data-target="#birthday"
+                                                     data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                             <div class="form-group">
+                                            <label for="telephone">Telephone</label>
+                                            <input type="text" class="form-control form-control-sm form-control form-control-sm-sm"
+                                                   value="{{ trainer.admin.telephone }}" name="telephone" id="telephone"
+                                                   data-inputmask="'mask': ['999 999 999[9]', '+099 999 999 99[9]']"
+                                                   data-mask-1 readonly/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input type="email" class="form-control form-control-sm" name="email"
+                                                   value="{{ trainer.admin.email }}" id="email" placeholder="Enter Email" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="address">Address</label>
+                                            <input type="text" class="form-control form-control-sm" name="address"
+                                                   value="{{ trainer.admin.address }}" id="address" readonly>
+                                        </div>
+                                        </div>
+                                    </div>
+                                     <a class="btn btn-info btn-sm float-right"
+                                               href="#"  onclick='EditAccount("{{ trainer.admin.username }}")'>
+                                                <i class="fas fa-pencil-alt"> Edit</i>
+                                            </a>
+                                </div>
+
+                                <div class="tab-pane" id="#">
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-content -->
+                    </div><!-- /.card-body -->
+                </div>
+                <!-- /.nav-tabs-custom -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Upload Image</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form enctype="multipart/form-data" action="" method="POST" id="Images_form" >
+                    {% csrf_token %}
+                    <input type="hidden" name="Student" value="{{ trainer.id }}">
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" name="Url" class="custom-file-input" multiple
+                                               id="exampleInputFile">
+                                        <label class="custom-file-label" for="exampleInputFile">Choose images</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" value="AddImage" name="_Save">Save</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+{% endblock %}
+{% block js %}
+    <!-- Select2 -->
+    <script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+    <!-- InputMask -->
+    <script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+    <script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+    <script>
+
+        $('[data-mask-1]').inputmask();
+        $('.select2').select2()
+        function EditAccount(Id) {
+            var url = "/StaffPage/Trainers/Edit/"+Id;
+            $("#myModalBodyDivEdit").load(url, function () {
+                $("#MyModalEdit").modal();
+            });
+        }
+         $(document).ready(function () {
+        bsCustomFileInput.init();
+    });
+    </script>
+{% endblock %}

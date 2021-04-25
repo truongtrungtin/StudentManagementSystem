@@ -1,0 +1,39 @@
+{% extends 'StudentPage/base.html' %}
+{% block Title %}
+My Courses
+{% endblock Title %}
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container">
+          <div class="row">
+              {% for course in courses %}
+                  <div class="col-12 col-sm-6 col-md-4 align-items-stretch">
+                      <a href="{% url 'student_view_attendance' course.Course.id %}">
+                          <div class="card card-primary card-outline">
+                              <div class="card-header p-1">
+                                  <h2 class="lead text-bold align-middle text-center">
+                                          {{ course.Course.Name }} <br> {{ course.Course.Descriptions }}
+                                  </h2>
+                              </div>
+                              <div class="card-body pt-1 pb-0">
+                                  <p class="text-muted text-sm"><b>Trainer: </b> {{ course.Trainer.admin.username }} </p>
+                                  <p class="text-muted text-sm"><b>Start date: </b> {{ course.StartDate }}</p>
+                                  <p class="text-muted text-sm"><b>End date: </b> {{ course.EndDate }} </p>
+                              </div>
+                              <div class="card-footer p-1">
+                                  <p class="text-bold mb-0 text-center">Present: {{ course.Attendance_present }}/{{ course.Attendance_total }} || Absent: {{ course.Attendance_absent }}/{{ course.Attendance_total }}</p>
+                              </div>
+                          </div>
+                      </a>
+
+                  </div>
+              {% endfor %}
+          <!-- ./col -->
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock content %}
+{% block js %}
+{% endblock js %}

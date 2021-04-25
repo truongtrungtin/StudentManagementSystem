@@ -1,0 +1,70 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+<!-- Main content -->
+<section class="content">
+    <form enctype="multipart/form-data" action="/StaffPage/Courses/{{ course.id }}/Update/" method="POST"
+        id="classes_form">
+        {% csrf_token %}
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    {# <div class="form-group">#}
+                        {# <label for="faculty">Faculty </label>#}
+                        {# <select class="form-control form-control-sm select2" name="faculty" required>#}
+                            {# {% if course.faculty != None %}#}
+                            {# <option value="{{ course.faculty.id }}">{{ course.faculty.Name }} - #}
+                            {# {{ course.faculty.Descriptions }} </option> #}
+                            {# {% else %}#}
+                            {# <option>-- Choose a category --</option>#}
+                            {# {% endif %}#}
+                            {# {% for item in faculties %}#}
+                            {# {% if item.id != course.faculty.id %}#}
+                            {# <option value="{{ item.id }}">{{ item.Name }} - {{ item.Descriptions }}</option>#}
+                            {# {% endif %}#}
+                            {##}
+                            {# {% endfor %}#}
+                            {# </select>#}
+                        {# </div>#}
+                    <div class="form-group">
+                        <label for="faculty">Faculty</label>
+                        <select class="form-control form-control-sm select2" name="faculty" required>
+                            <option value="{{ request.user.faculty.id }}">{{ request.user.faculty.Name }} -
+                                {{ request.user.faculty.Descriptions }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Name">Course</label>
+                        <input type="text" class="form-control form-control-sm" name="Name" id="Name"
+                            value="{{ course.Name }}" placeholder="Enter a course name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Descriptions">Descriptions</label>
+                        <input type="text" class="form-control form-control-sm" name="Descriptions"
+                            value="{{ course.Descriptions }}" id="Description" placeholder="Enter description" required>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+            <button type="submit" class="btn btn-success btn-sm" name="_Save">Update</button>
+
+        </div>
+    </form>
+</section>
+
+
+
+<!-- InputMask -->
+<script src="{% static 'plugins/inputmask/min/jquery.inputmask.bundle.min.js' %}"></script>
+<!-- bs-custom-file-input -->
+<script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+<script>
+    $('.select2').select2({
+        theme: 'bootstrap4'
+    })
+
+</script>

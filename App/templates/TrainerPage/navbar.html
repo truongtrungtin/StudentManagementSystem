@@ -1,0 +1,39 @@
+ {% load static %}
+ <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+    <div class="container">
+      <a href="{% url 'TrainerPage'  %}" class="navbar-brand">
+        <img src="https://firebasestorage.googleapis.com/v0/b/image-4bfb0.appspot.com/o/T_Logo.ico?alt=media&token=05d9e40a-6c1a-45df-bc08-f50256ea02c0" alt="T" class="brand-image"
+             style="opacity: .8">
+      </a>
+
+      <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a href="{% url 'TrainerPage'  %}" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'TrainerViewCourses' %}" class="nav-link">My Courses</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Right navbar links -->
+      <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+         <li class="nav-item dropdown">
+            <a id="dropdownSubMenu" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ user.first_name }} {{ user.last_name }}</a>
+            <ul aria-labelledby="dropdownSubMenu" class="dropdown-menu border-0 shadow">
+              <li><a href="{% url 'trainer_profile' %}" class="dropdown-item">Profile</a></li>
+            </ul>
+          </li>
+            <li class="nav-item">
+            <a href="{% url 'logout_user' %}" class="nav-link">Logout</a>
+          </li>
+      </ul>
+    </div>
+  </nav>

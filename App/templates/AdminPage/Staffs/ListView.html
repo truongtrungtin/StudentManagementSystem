@@ -1,0 +1,182 @@
+{% extends 'AdminPage/base.html' %}
+{% load static %}
+{% block css %}
+{% endblock %}
+{% block Title %} STAFF LIST {% endblock Title %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'AdminPage' %}">HOME</a></li>
+    <li class="breadcrumb-item active">STAFF LIST</li>
+{% endblock breadcrumb %}
+{% block content %}
+
+    <form action="{% url "CreateAccountStaff" %}" method="POST" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <div class="modal fade" id="MyModalCreate">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="ModalTitle" class="card-title text-bold">CREATE A NEW ACCOUNT</h5>
+                        <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                    </div>
+                    <div class="modal-body" id="myModalBodyDivCreate">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="modal fade" id="MyModalEdit">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="ModalTitle" class="card-title mb-0">Edit Account</h5>
+                        <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                    </div>
+                    <div class="modal-body" id="myModalBodyDivEdit">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="card card-solid">
+            <div class="card-header">
+                <a href="#" onclick='CreateAccountStaff()' class="btn btn-sm btn-success">CREATE A NEW ACCOUNT</a>
+            </div>
+            <div class="card-body pb-0">
+                <div class="row d-flex align-items-stretch">
+                    <table class="table table-striped table-bordered projects">
+                        <thead>
+                        <tr>
+                            <th style="width: 10%" class="text-center">
+                                Avatar
+                            </th>
+                            <th style="width: 10%" class="text-center">
+                                Id
+                            </th>
+                            <th style="width: 20%" class="text-center">
+                                Fullname
+                            </th>
+                            <th style="width: 20%" class="text-center">
+                                Email
+                            </th>
+                            <th style="width: 10%" class="text-center">
+                                Telephone
+                            </th>
+                            <th style="width: 10%" class="text-center">
+                                Faculty
+                            </th>
+                            <th style="width: 5%" class="text-center">
+                                Status
+                            </th>
+                            <th style="width: 20%" class="text-center">
+                                #
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in staffs %}
+                            <tr>
+                                <td class="text-center">
+                                    <ul class="list-inline">
+                                        <li class="list-inline-item">
+                                            <img alt="Avatar" class="table-avatar" src="{{ item.Avatar|GetImage }}">
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td><a href="{% url 'ProfileAccountStaffs' item.username %}">{{ item.username }}</a></td>
+                                <td>{{ item.first_name }} {{ item.last_name }}</td>
+                                <td>{{ item.email }}</td>
+                                <td>{{ item.telephone }}</td>
+                                <td class="text-center" title="{{ item.faculty.Descriptions }}">{{ item.faculty.Name }}</td>
+                                <td class="project-state">
+                                    {% if item.is_active %} <span class="badge badge-success">Active</span> {% else %}
+                                        <span class="badge badge-danger">Inactive</span>  {% endif %}
+                                </td>
+                                <td class="project-actions text-center">
+
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="username" value="{{ item.username }}">
+                                        <a class="btn btn-info btn-sm"
+                                           href="#"  onclick='EditAccountStaff("{{ item.username }}")'>
+                                            <i class="fas fa-pencil-alt"> Edit</i>
+                                        </a>
+                                        {% if item.is_active %}
+                                            <input type="hidden" name="is_active" value="false">
+                                            <button type="submit" class="btn btn-danger btn-sm" name="Status"
+                                                    value="Lock">
+                                                <i class="fas fa-lock"> Lock </i>
+                                            </button>
+                                        {% else %}
+                                            <input type="hidden" name="is_active" value="true">
+                                            <button class="btn btn-success btn-sm" name="Status" value="Unlock">
+                                                <i class="fas fa-lock-open"> Unlock</i>
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                <nav aria-label="Contacts Page Navigation">
+                    <ul class="pagination justify-content-center m-0">
+                        {% if trainers.paginator.count > 12 %}
+                            {% if trainers.has_previous %}
+                                <li class="page-item "><a class="page-link" href="?page=1">First</a></li>
+                            {% endif %}
+                            {% for num in trainers.paginator.page_range %}
+
+                                {% if trainers.number == num %}
+                                    <li class="page-item active"><a class="page-link"
+                                                                    href="?page={{ num }}">{{ num }}</a></li>
+                                {% elif num > trainers.number|add:'-3' and num < trainers.number|add:'3' %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                {% endif %}
+
+                            {% endfor %}
+
+                            {% if trainers.has_next %}
+                                <li class="page-item"><a class="page-link"
+                                                         href="?page={{ trainers.paginator.num_pages }}">Last</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+
+                    </ul>
+                </nav>
+            </div>
+            <!-- /.card-footer -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+{% endblock %}
+{% block js %}
+    <script>
+        var CreateAccountStaff = function () {
+            var url = "{% url "CreateAccountStaff" %}";
+            $("#myModalBodyDivCreate").load(url, function () {
+                $("#MyModalCreate").modal();
+            });
+        };
+
+        function EditAccountStaff(Id) {
+            var url = "/AdminPage/Staffs/Edit/"+Id;
+            $("#myModalBodyDivEdit").load(url, function () {
+                $("#MyModalEdit").modal();
+            });
+        }
+    </script>
+
+
+{% endblock %}

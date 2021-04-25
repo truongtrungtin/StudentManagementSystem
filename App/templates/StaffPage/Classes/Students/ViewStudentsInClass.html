@@ -1,0 +1,131 @@
+{% extends 'StaffPage/base.html' %}
+{% load static %}
+{% block css %}
+{% endblock css %}
+{% block Title %} {{ class.Name }} {% endblock Title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'StaffPage' %}">Home</a></li>
+    <li class="breadcrumb-item active"><a href="{% url 'ListViewClass' %}">Class</a></li>
+    <li class="breadcrumb-item"><a
+            href="{% url 'ViewStudentInClass' class.Name %}">{{ class.Name }}</a></li>
+    <li class="breadcrumb-item active">STUDENTS</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="modal fade" id="MyModalCreate">
+        <div class="modal-dialog" >
+            <div class="modal-content" style="width: 800px!important;">
+                <div class="modal-header">
+                    <h5 id="ModalTitle" class="card-title text-bold">STUDENTS MANAGEMENT</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                </div>
+                <div class="modal-body" id="myModalBodyDivCreate">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="MyModalEdit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="ModalTitle" class="card-title mb-0">EDIT A CLASS</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                </div>
+                <div class="modal-body" id="myModalBodyDivEdit">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container">
+            <!-- Default box -->
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <a href="#" onclick='Create()' class="btn btn-sm btn-success float-right">STUDENTS MANAGEMENT</a>
+                </div>
+                <div class="card-body pb-0">
+                    <table class="table table-striped table-bordered projects">
+                        <thead>
+                        <tr>
+                            <th style="width: 5%" class="text-center">
+                                Avatar
+                            </th>
+                            <th style="width: 10%">
+                                Fullname
+                            </th>
+                            <th style="width: 20%">
+                                Email
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in students %}
+                            <tr>
+                                <td class="text-center">
+                                    <ul class="list-inline">
+                                        <li class="list-inline-item">
+                                            <img alt="Avatar" class="table-avatar" src="{{ item.admin.Avatar|GetImage }}">
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td>{{ item.admin.first_name }} {{ item.admin.last_name }}</td>
+                                <td>{{ item.admin.email }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <nav aria-label="Contacts Page Navigation">
+                        <ul class="pagination justify-content-center m-0">
+                            {% if students.paginator.count > 30 %}
+                                {% if students.has_previous %}
+                                    <li class="page-item "><a class="page-link" href="?page=1">First</a></li>
+                                {% endif %}
+                                {% for num in students.paginator.page_range %}
+                                    {% if students.number == num %}
+                                        <li class="page-item active"><a class="page-link"
+                                                                        href="?page={{ num }}">{{ num }}</a></li>
+                                    {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if students.has_next %}
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?page={{ students.paginator.num_pages }}">Last</a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+
+                        </ul>
+                    </nav>
+                </div>
+                <!-- /.card-footer -->
+            </div>
+            <!-- /.card -->
+        </div>
+
+
+    </section>
+    <!-- /.content -->
+{% endblock %}
+{% block js %}
+<script>
+    var Create = function () {
+        var url = "{% url "AddStudentToClass" class.Name %}";
+            $("#myModalBodyDivCreate").load(url, function () {
+            $("#MyModalCreate").modal();
+        });
+    };
+
+    function Edit(Id) {
+    var url = "/StaffPage/Classes/"+Id+"/Update/";
+    $("#myModalBodyDivEdit").load(url, function () {
+    $("#MyModalEdit").modal();
+    });
+    }
+</script>
+{% endblock js %}

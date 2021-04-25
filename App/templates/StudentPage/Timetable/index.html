@@ -1,0 +1,112 @@
+{% extends 'StudentPage/base.html' %}
+
+{% load static %}
+
+{% block css  %}
+
+<!-- fullCalendar -->
+<link rel="stylesheet" href="{% static 'plugins/fullcalendar/main.min.css' %}">
+    <style>
+
+        .fc-daygrid-dot-event {
+            display: block;
+        }
+        .fc-daygrid-event {
+            white-space: break-spaces;
+        }
+        .fc .fc-scroller-liquid-absolute {
+            right: -17px;
+        }
+    </style>
+{% endblock %}
+{% block Title %} TIMETABLE {% endblock Title %}
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Timetable</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container">
+            <div class="card">
+                <div class="card-body p-1" >
+                <!-- THE CALENDAR -->
+                    <div id="calendar"></div>
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+    </section>
+    <!-- /.content -->
+    <!-- ./wrapper -->
+{% endblock %}
+
+{% block js  %}
+<!-- fullCalendar 2.2.5 -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/fullcalendar/main.min.js' %}"></script>
+<!-- Page specific script -->
+<script>
+$(function () {
+    var Calendar = FullCalendar.Calendar;
+
+    var calendarEl = document.getElementById('calendar');
+    var dict = []
+    {% for item in result %}
+        {% if  item.Date != None %}
+        dict.push({
+            title          : 'Room: {{  item.Classroom }}\nCourse: {{ item.Code.Name }}\nSessionNo: {{ item.Lesson.Session }}\nTrainer: {{ item.Trainer }}\nStatus: {{ item.Status }}',
+            start          :  new Date({{ item.Date|date:'Y,m-1,d' }},{{ item.StartTime|time:"H,i" }}),
+            end            :  new Date({{ item.Date|date:'Y,m-1,d' }},{{ item.EndTime|time:"H,i" }}),
+            {% if item.Status == 'Present' %}
+            backgroundColor: '#00d95a', //yellow
+            {% elif item.Status == 'Absent' %}
+            backgroundColor: '#f56954', //yellow
+            {% else %}
+            backgroundColor: '#00c0ef', //yellow
+            {% endif %}
+        });
+        {% endif %}
+    {% endfor %}
+    // initialize the external events
+    // -----------------------------------------------------------------
+    // Declare a new array
+    let newArray = [];
+
+    // Declare an empty object
+    let uniqueObject = {};
+
+    // Loop for the array elements
+    for (let i in dict) {
+        // Extract the title
+        objTitle = dict[i]['title','start','end'];
+
+        // Use the title as the index
+        uniqueObject[objTitle] = dict[i];
+    }
+
+    // Loop to push unique object into array
+    for (i in uniqueObject) {
+        newArray.push(uniqueObject[i]);
+    }
+
+    var calendar = new Calendar(calendarEl, {
+        headerToolbar    : {
+        left  : 'prev,next today',
+        center: 'title',
+        right : 'dayGridMonth,listWeek',
+      },
+        initialView: 'dayGridMonth',
+
+        themeSystem: 'bootstrap',
+      //Random default events
+        events    : newArray,
+    });
+    calendar.render();
+  })
+
+</script>
+
+
+{% endblock %}

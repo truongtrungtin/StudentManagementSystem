@@ -1,0 +1,57 @@
+{% load static %}
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container">
+            <form enctype="multipart/form-data" action="{% url 'AddStudentToClass' class.Name %}" method="POST" id="students_form" >
+                {% csrf_token %}
+                <div class="card card-default">
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <select class="duallistbox" name="username" multiple="multiple">
+                                        {% for student in studentNoneClass %}
+                                            <option value="{{ student.admin.username }}">{{ student.admin.first_name }} {{ student.admin.last_name }}
+                                                ({{ student.admin.username }})
+                                            </option>
+                                        {% endfor %}
+                                        {% for student in studentInClass %}
+                                            <option value="{{ student.admin.username }}"
+                                                    selected>{{ student.admin.first_name }} {{ student.admin.last_name }}
+                                                ({{ student.admin.username }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <!-- /.form-group -->
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm" name="_Save">Save</button>
+                <!-- /.nav-tabs-custom -->
+            </form>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- InputMask -->
+    <script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+    <!-- Bootstrap4 Duallistbox -->
+    <script src="{% static 'plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+    <!-- bs-custom-file-input -->
+    <script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+    <script>
+        //Datemask dd/mm/yyyy
+        $('[data-mask]').inputmask()
+        $('.duallistbox').bootstrapDualListbox({
+            nonSelectedListLabel: "Students aren't in class.",
+            selectedListLabel: 'Students in class.',
+        })
+    </script>

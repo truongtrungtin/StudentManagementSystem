@@ -1,0 +1,100 @@
+{% extends 'StaffPage/base.html' %}
+{% load static %}
+{% block css %}
+{% endblock css %}
+{% block Title %} CLASSES {% endblock Title %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'StaffPage' %}">Home</a></li>
+    <li class="breadcrumb-item active">Class list</li>
+{% endblock breadcrumb %}
+{% block content %}
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="card card-solid">
+            <div class="card-body pb-0">
+                <div class="row d-flex align-items-stretch">
+                    {% for item in class %}
+                        <div class="col-12 col-sm-6 col-md-3 col-lg-3 col-xl-2 align-items-stretch">
+                            <div class="card bg-light">
+                                <div class="card-header pt-2 pb-0">
+                                    <h2 class="lead text-bold">
+                                        <b>
+                                            {{ item.Name }}
+                                        </b>
+                                    </h2>
+                                </div>
+                                <div class="card-body pt-1 pb-0">
+                                    <p class="text-muted text-sm"><b>Start Day: </b> {{ item.StartDate }} </p>
+                                    <p class="text-muted text-sm">
+                                        <b>Status:</b>
+                                        {% if item.IsActive %}
+                                            <span
+                                                    class="text-blue">Active
+                                </span>
+                                        {% else %}
+                                            <span
+                                                    class="text-red">Inactive
+                                </span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="card-footer p-1">
+                                    <div class="text-right">
+                                        <a href="{% url 'Classes:Update' item.Name %}" class="btn btn-sm bg-yellow">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="{% url 'ViewCourseInClass' item.Name %}" class="btn btn-sm bg-teal">
+                                            <i class="fas fa-book"></i> Courses
+                                        </a>
+                                        <a href="{% url 'ViewStudentInClass' item.Name %}"
+                                           class="btn btn-sm btn-primary">
+                                            <i class="fas fa-user"></i> Students
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                <nav aria-label="Contacts Page Navigation">
+                    <ul class="pagination justify-content-center m-0">
+                        {% if students.paginator.count > 18 %}
+                            {% if students.has_previous %}
+                                <li class="page-item "><a class="page-link" href="?page=1">First</a></li>
+                            {% endif %}
+                            {% for num in students.paginator.page_range %}
+
+                                {% if students.number == num %}
+                                    <li class="page-item active"><a class="page-link"
+                                                                    href="?page={{ num }}">{{ num }}</a></li>
+                                {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                {% endif %}
+
+                            {% endfor %}
+
+                            {% if students.has_next %}
+                                <li class="page-item"><a class="page-link"
+                                                         href="?page={{ students.paginator.num_pages }}">Last</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+
+                    </ul>
+                </nav>
+            </div>
+            <!-- /.card-footer -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+{% endblock content %}
+{% block js %}
+
+{% endblock js %}
